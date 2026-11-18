@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rifa Sandero 2018</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#10131b;color:#fff}
+header{text-align:center;padding:25px 15px;background:#191f2b}
+h1{color:#ffc928;margin-bottom:8px}
+.container{max-width:850px;margin:auto;padding:16px}
+.card{background:#1c2330;border-radius:15px;padding:20px;margin-bottom:18px}
+.price{font-size:30px;color:#ffc928;font-weight:bold}
+button{border:0;border-radius:9px;padding:13px;font-weight:bold;cursor:pointer}
+#numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.num{background:#303949;color:white;padding:10px 3px;font-size:13px}
+.num.selected{background:#ffc928;color:#111}
+input{width:100%;padding:14px;margin:8px 0;border-radius:8px;border:0;font-size:16px}
+.buy{width:100%;background:#19c37d;color:#111;font-size:17px;margin-top:12px}
+.small{color:#c2c8d2;font-size:13px}
+#selected{color:#ffc928;font-weight:bold}
+@media(min-width:600px){#numbers{grid-template-columns:repeat(10,1fr)}}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🚗 RIFA SANDERO 2018</h1>
+<p>Concorra a um carro incrível!</p>
+</header>
+
+<div class="container">
+
+<div class="card" style="text-align:center">
+<h2>🏆 Prêmio</h2>
+<h2>Renault Sandero 2018</h2>
+<div class="price">R$ 50,00</div>
+<p>Por número</p>
+<p class="small">Sorteio pela Loteria Federal</p>
+</div>
+
+<div class="card">
+<h3>🎟️ Escolha seus números</h3>
+<p class="small">Números disponíveis de 0000 a 9999</p>
+<div id="numbers"></div>
+</div>
+
+<div class="card">
+<h3>🛒 Sua compra</h3>
+<p>Números selecionados: <span id="selected">Nenhum</span></p>
+<p>Quantidade: <span id="qty">0</span></p>
+<h2>Total: R$ <span id="total">0,00</span></h2>
+
+<input id="name" placeholder="Seu nome completo">
+<input id="phone" placeholder="WhatsApp com DDD" type="tel">
+
+<button class="buy" onclick="checkout()">CONTINUAR</button>
+<p class="small">Pagamento e reserva de números serão ativados após a configuração do sistema.</p>
+</div>
+
+<div class="card">
+<h3>📜 Regras do sorteio</h3>
+<p>• Cada número custa R$ 50,00.</p>
+<p>• Serão comercializados no máximo 2.000 números.</p>
+<p>• A numeração vai de 0000 até 9999.</p>
+<p>• O sorteio será baseado na Loteria Federal.</p>
+<p>• Se não houver número exato, será considerado o número mais próximo inferior. Em caso de empate, vence o menor número.</p>
+</div>
+
+</div>
+
+<script>
+let chosen=[];
+const numbers=document.getElementById('numbers');
+
+for(let i=0;i<10000;i++){
+ let b=document.createElement('button');
+ b.className='num';
+ b.textContent=String(i).padStart(4,'0');
+ b.onclick=()=>{
+   if(chosen.includes(i)){
+     chosen=chosen.filter(n=>n!==i);
+     b.classList.remove('selected');
+   }else{
+     chosen.push(i);
+     b.classList.add('selected');
+   }
+   update();
+ };
+ numbers.appendChild(b);
+}
+
+function update(){
+ chosen.sort((a,b)=>a-b);
+ document.getElementById('selected').textContent=
+ chosen.length?chosen.map(n=>String(n).padStart(4,'0')).join(', '):'Nenhum';
+ document.getElementById('qty').textContent=chosen.length;
+ document.getElementById('total').textContent=(chosen.length*50).toFixed(2).replace('.',',');
+}
+
+function checkout(){
+ if(!chosen.length){alert('Escolha pelo menos um número.');return;}
+ if(!document.getElementById('name').value.trim()){
+   alert('Informe seu nome.');return;
+ }
+ if(!document.getElementById('phone').value.trim()){
+   alert('Informe seu WhatsApp.');return;
+ }
+ alert('Site em fase de teste. Pagamentos ainda não estão ativados.');
+}
+</script>
+
+</body>
+</html>
