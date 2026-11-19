@@ -21,6 +21,7 @@ button{border:0;border-radius:9px;padding:12px;font-weight:bold;cursor:pointer}
 .num.unavailable{background:#702f36;color:white;cursor:not-allowed;opacity:.7}
 input{width:100%;padding:14px;margin:8px 0;border-radius:8px;border:0;font-size:16px}
 .buy{width:100%;background:#19c37d;color:#111;font-size:17px;margin-top:12px}
+.buy:disabled{opacity:.5;cursor:wait}
 .small{color:#c2c8d2;font-size:13px}
 #selected{color:#ffc928;font-weight:bold;overflow-wrap:anywhere}
 .controls{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:15px}
@@ -58,14 +59,20 @@ input{width:100%;padding:14px;margin:8px 0;border-radius:8px;border:0;font-size:
 
 <div class="card">
 <h3>🎟️ Escolha seus números</h3>
-<p class="small">Números de 0000 a 9999</p>
+<p class="small">Números disponíveis de 0000 a 9999</p>
 
 <p id="loading">Carregando números da rifa...</p>
 <div id="message"></div>
 <p class="small" id="availability"></p>
 
-<input id="search" type="number" min="0" max="9999"
-placeholder="Buscar número (ex.: 0250)" disabled>
+<input
+id="search"
+type="number"
+min="0"
+max="9999"
+placeholder="Buscar número (ex.: 0250)"
+disabled
+>
 
 <div class="legend">
 <span><i class="dot available-dot"></i>Disponível</span>
@@ -84,15 +91,26 @@ placeholder="Buscar número (ex.: 0250)" disabled>
 
 <div class="card">
 <h3>🛒 Sua compra</h3>
-<p>Números selecionados: <span id="selected">Nenhum</span></p>
+
+<p>Números selecionados:
+<span id="selected">Nenhum</span>
+</p>
+
 <p>Quantidade: <span id="qty">0</span></p>
+
 <h2>Total: R$ <span id="total">0,00</span></h2>
 
 <input id="name" placeholder="Seu nome completo">
 <input id="phone" placeholder="WhatsApp com DDD" type="tel">
 
-<button class="buy" onclick="checkout()">CONTINUAR</button>
-<p class="small">Sistema em fase de testes. Reservas e pagamentos ainda não estão ativados.</p>
+<button class="buy" id="buyButton" onclick="checkout()">
+CONTINUAR
+</button>
+
+<p class="small">
+A reserva tem duração de 15 minutos.
+Pagamento ainda não ativado.
+</p>
 </div>
 
 <div class="card">
@@ -107,7 +125,8 @@ placeholder="Buscar número (ex.: 0250)" disabled>
 </div>
 
 <script>
-const API_URL = "https://mpcspsmmkfnfekzjbqmu.supabase.co/functions/v1/rifa-api";
+const API_URL =
+"https://mpcspsmmkfnfekzjbqmu.supabase.co/functions/v1/rifa-api";
 
 let allNumbers = [];
 let chosen = [];
@@ -118,8 +137,8 @@ const pageSize = 200;
 const numbersElement = document.getElementById("numbers");
 const searchElement = document.getElementById("search");
 
-function formatNumber(n) {
-  return String(n).padStart(4, "0");
+function formatNumber(number) {
+  return String(number).padStart(4, "0");
 }
 
 function showMessage(text, type) {
@@ -130,14 +149,17 @@ function showMessage(text, type) {
 }
 
 async function loadNumbers() {
-  try {
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Erro ao acessar a API.");
+  const loading = document.getElementById("loading");
 
+  try {
+    loading.textContent = "Carregando números...";
+
+    const response = await fetch(API_URL);
     const result = await response.json();
 
-    if (!result.success || !Array.isArray(result.numbers)) {
-      throw new Error(result.error || "Não foi possível carregar os números.");
+    if (!response.ok || !result.success ||
+        !Array.isArray(result.numbers)) {
+      throw new Error(result.error || "Erro ao carregar os números.");
     }
 
     allNumbers = result.numbers;
@@ -146,16 +168,20 @@ async function loadNumbers() {
     document.getElementById("ticketPrice").textContent =
       "R$ " + ticketPrice.toFixed(2).replace(".", ",");
 
-    document.getElementById("loading").textContent = "";
     searchElement.disabled = false;
 
     renderNumbers();
     update();
     updateAvailability();
 
+    loading.textContent = "";
+
   } catch (error) {
-    document.getElementById("loading").textContent = "";
-    showMessage("Não foi possível carregar a rifa. Atualize a página ou tente novamente.", "error");
+    loading.textContent = "";
+    showMessage(
+      "Não foi possível carregar a rifa. Atualize a página e tente novamente.",
+      "error"
+    );
     console.error(error);
   }
 }
@@ -164,45 +190,54 @@ function renderNumbers() {
   numbersElement.innerHTML = "";
 
   const searchValue = searchElement.value.trim();
-
   let filtered = allNumbers;
 
   if (searchValue !== "") {
     const number = Number(searchValue);
-    filtered = allNumbers.filter(item => item.number === number);
+
+    filtered = allNumbers.filter(
+      item => item.number === number
+    );
+
     document.getElementById("pageInfo").textContent =
       filtered.length ? "Resultado da busca" : "Número não encontrado";
+
     document.getElementById("prev").disabled = true;
     document.getElementById("next").disabled = true;
+
   } else {
     const totalPages = Math.ceil(filtered.length / pageSize);
     const start = currentPage * pageSize;
+
     filtered = filtered.slice(start, start + pageSize);
 
     document.getElementById("pageInfo").textContent =
       `Página ${currentPage + 1} de ${totalPages}`;
 
-    document.getElementById("prev").disabled = currentPage === 0;
+    document.getElementById("prev").disabled =
+      currentPage === 0;
+
     document.getElementById("next").disabled =
       currentPage >= totalPages - 1;
   }
 
   filtered.forEach(item => {
-    const b = document.createElement("button");
-    b.className = "num";
-    b.textContent = formatNumber(item.number);
+    const button = document.createElement("button");
+
+    button.className = "num";
+    button.textContent = formatNumber(item.number);
 
     const status = String(item.status).toLowerCase();
 
     if (status !== "available") {
-      b.classList.add("unavailable");
-      b.disabled = true;
-      b.title = "Indisponível";
+      button.classList.add("unavailable");
+      button.disabled = true;
+      button.title = "Indisponível";
     } else if (chosen.includes(item.number)) {
-      b.classList.add("selected");
+      button.classList.add("selected");
     }
 
-    b.onclick = () => {
+    button.onclick = () => {
       if (status !== "available") return;
 
       if (chosen.includes(item.number)) {
@@ -215,19 +250,20 @@ function renderNumbers() {
       update();
     };
 
-    numbersElement.appendChild(b);
+    numbersElement.appendChild(button);
   });
 }
 
 function update() {
-  chosen.sort((a,b) => a-b);
+  chosen.sort((a, b) => a - b);
 
   document.getElementById("selected").textContent =
     chosen.length
       ? chosen.map(formatNumber).join(", ")
       : "Nenhum";
 
-  document.getElementById("qty").textContent = chosen.length;
+  document.getElementById("qty").textContent =
+    chosen.length;
 
   document.getElementById("total").textContent =
     (chosen.length * ticketPrice).toFixed(2).replace(".", ",");
@@ -261,23 +297,90 @@ searchElement.addEventListener("input", () => {
   renderNumbers();
 });
 
-function checkout() {
+async function checkout() {
   if (!chosen.length) {
     alert("Escolha pelo menos um número.");
     return;
   }
 
-  if (!document.getElementById("name").value.trim()) {
-    alert("Informe seu nome.");
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+
+  if (name.length < 3) {
+    alert("Informe seu nome completo.");
     return;
   }
 
-  if (!document.getElementById("phone").value.trim()) {
-    alert("Informe seu WhatsApp.");
+  if (phone.replace(/\D/g, "").length < 10) {
+    alert("Informe seu WhatsApp com DDD.");
     return;
   }
 
-  alert("Seleção realizada! A reserva e o pagamento ainda não estão ativados.");
+  const button = document.getElementById("buyButton");
+
+  button.disabled = true;
+  button.textContent = "FAZENDO RESERVA...";
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        numbers: [...chosen]
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.error || "Não foi possível realizar a reserva."
+      );
+    }
+
+    const expiration = new Date(result.expires_at);
+
+    const expirationText = expiration.toLocaleTimeString(
+      "pt-BR",
+      {
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    );
+
+    showMessage(
+      "Reserva criada com sucesso! Válida até " +
+      expirationText + ".",
+      "success"
+    );
+
+    alert(
+      "RESERVA REALIZADA!\n\n" +
+      "Números: " +
+      result.numbers.map(formatNumber).join(", ") +
+      "\nTotal: R$ " +
+      Number(result.total_amount).toFixed(2).replace(".", ",") +
+      "\nVálida até: " + expirationText +
+      "\n\nPagamento ainda não está ativado."
+    );
+
+    chosen = [];
+    update();
+
+    await loadNumbers();
+
+  } catch (error) {
+    alert(error.message);
+    await loadNumbers();
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "CONTINUAR";
+  }
 }
 
 loadNumbers();
