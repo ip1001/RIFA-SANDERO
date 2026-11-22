@@ -2,580 +2,279 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rifa Sandero 2018</title>
-
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #101114;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    header {
-      text-align: center;
-      padding: 25px 10px;
-    }
-
-    h1 {
-      color: #ffc400;
-      margin-bottom: 8px;
-    }
-
-    .car {
-      width: 100%;
-      max-width: 600px;
-      border-radius: 12px;
-      margin: 15px auto;
-      display: block;
-    }
-
-    .info, .panel {
-      background: #1c1e23;
-      border: 1px solid #33363e;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .price {
-      color: #ffc400;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 15px;
-    }
-
-    input {
-      width: 100%;
-      padding: 13px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #101114;
-      color: white;
-      font-size: 16px;
-      margin: 7px 0 14px;
-    }
-
-    .controls input {
-      flex: 1;
-      min-width: 180px;
-      margin: 0;
-    }
-
-    button {
-      cursor: pointer;
-      border: 0;
-      border-radius: 7px;
-      padding: 11px 14px;
-      font-weight: bold;
-    }
-
-    .number-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
-      gap: 7px;
-    }
-
-    .number {
-      background: #292c33;
-      color: white;
-      border: 1px solid #444;
-      min-height: 42px;
-    }
-
-    .number.selected {
-      background: #ffc400;
-      color: #111;
-      border-color: #ffc400;
-    }
-
-    .number.unavailable {
-      background: #702d2d;
-      color: #ddd;
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      align-items: center;
-      margin: 18px 0;
-    }
-
-    .pagination button, .main-button {
-      background: #ffc400;
-      color: #111;
-    }
-
-    .pagination button:disabled {
-      opacity: .4;
-      cursor: not-allowed;
-    }
-
-    .summary {
-      line-height: 1.8;
-      font-size: 17px;
-    }
-
-    .total {
-      color: #ffc400;
-      font-size: 25px;
-      font-weight: bold;
-    }
-
-    .main-button {
-      width: 100%;
-      padding: 16px;
-      font-size: 17px;
-      margin-top: 12px;
-    }
-
-    .main-button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    .message {
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 12px;
-      display: none;
-      line-height: 1.5;
-    }
-
-    .error {
-      background: #542727;
-      color: #fff;
-    }
-
-    .success {
-      background: #1d4a32;
-      color: #fff;
-    }
-
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin: 12px 0;
-      color: #ccc;
-      font-size: 13px;
-    }
-
-    .dot {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-      margin-right: 5px;
-      vertical-align: middle;
-    }
-
-    .available-dot { background: #292c33; }
-    .selected-dot { background: #ffc400; }
-    .unavailable-dot { background: #702d2d; }
-
-    .security {
-      display: flex;
-      justify-content: center;
-      margin: 15px 0;
-    }
-
-    footer {
-      text-align: center;
-      color: #888;
-      font-size: 12px;
-      padding: 25px 0;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rifa Sandero 2018</title>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#fff;font-family:Arial,sans-serif}
+header{text-align:center;padding:24px 12px;background:#202020}
+h1{color:#ffc400}
+main{max-width:900px;margin:auto;padding:15px}
+.card{background:#222;padding:16px;border-radius:12px;margin:14px 0}
+.price{color:#ffc400;font-size:24px;font-weight:bold}
+input{width:100%;padding:13px;margin:7px 0;border-radius:7px;border:1px solid #555;background:#333;color:white;font-size:16px}
+button{padding:12px;border:0;border-radius:7px;background:#ffc400;color:#111;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+#numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.num{padding:10px 2px;background:#333;color:white;border-radius:5px;font-size:13px}
+.num.selected{background:#ffc400;color:#111}
+.num.unavailable{background:#a33;color:white}
+#pagination{display:flex;justify-content:space-between;align-items:center;margin:12px 0}
+#message{white-space:pre-wrap;margin:12px 0}
+#pix{display:none;text-align:center}
+#qr{max-width:250px;width:100%;background:white;padding:8px}
+#pixcode{word-break:break-all;background:#333;padding:12px;border-radius:7px}
+.small{color:#bbb;font-size:13px}
+</style>
 </head>
-
 <body>
-<div class="container">
+<header>
+<h1>RIFA SANDERO 2018</h1>
+<p>Concorra a este prêmio!</p>
+<div class="price">R$ 50,00 por número</div>
+</header>
 
-  <header>
-    <h1>RIFA SANDERO 2018</h1>
-    <p>Escolha seus números e participe!</p>
-    <img
-      class="car"
-      src="https://placehold.co/900x500/252525/ffc400?text=RENAULT+SANDERO+2018"
-      alt="Imagem ilustrativa do Renault Sandero 2018"
-    >
-    <div class="price">R$ 50,00 por número</div>
-  </header>
-
-  <section class="info">
-    <h2>Informações da rifa</h2>
-    <p>Numeração disponível: 0000 até 9999.</p>
-    <p>Limite de vendas: 2.000 números.</p>
-    <p>Escolha livremente seus números.</p>
-    <p>Os números selecionados ficam reservados por 15 minutos, sujeitos à confirmação da reserva pela plataforma.</p>
-  </section>
-
-  <section class="panel">
-    <h2>Escolha seus números</h2>
-
-    <div class="controls">
-      <input
-        type="number"
-        id="searchNumber"
-        placeholder="Pesquisar número"
-        min="0"
-        max="9999"
-      >
-      <button class="main-button" style="width:auto;margin:0" onclick="searchNumber()">
-        Pesquisar
-      </button>
-    </div>
-
-    <div class="legend">
-      <span><i class="dot available-dot"></i>Disponível</span>
-      <span><i class="dot selected-dot"></i>Selecionado</span>
-      <span><i class="dot unavailable-dot"></i>Indisponível</span>
-    </div>
-
-    <div id="numberGrid" class="number-grid">
-      Carregando números...
-    </div>
-
-    <div class="pagination">
-      <button id="previousButton" onclick="changePage(-1)">Anterior</button>
-      <span id="pageInfo">Página 1</span>
-      <button id="nextButton" onclick="changePage(1)">Próxima</button>
-    </div>
-  </section>
-
-  <section class="panel">
-    <h2>Seus dados</h2>
-
-    <label for="buyerName">Nome completo</label>
-    <input
-      type="text"
-      id="buyerName"
-      placeholder="Digite seu nome completo"
-      maxlength="120"
-    >
-
-    <label for="buyerPhone">WhatsApp com DDD</label>
-    <input
-      type="tel"
-      id="buyerPhone"
-      placeholder="Ex.: 11999999999"
-      maxlength="20"
-    >
-
-    <div class="summary">
-      <div>Números selecionados: <strong id="selectedCount">0</strong></div>
-      <div>Valor total: <span class="total" id="totalPrice">R$ 0,00</span></div>
-    </div>
-
-    <div class="security">
-      <div
-        class="cf-turnstile"
-        data-sitekey="0x4AAAAAAGID1kwXr946xkqv"
-      ></div>
-    </div>
-
-    <button
-      class="main-button"
-      id="buyButton"
-      onclick="checkout()"
-    >
-      CONTINUAR
-    </button>
-
-    <div id="message" class="message"></div>
-  </section>
-
-  <footer>
-    Rifa Sandero 2018
-  </footer>
+<main>
+<div class="card">
+<h2>Escolha seus números</h2>
+<p class="small">Números de 0000 a 9999. Vermelho = indisponível.</p>
+<input id="search" placeholder="Buscar número" maxlength="4">
+<div id="numbers">Carregando números...</div>
+<div id="pagination">
+<button id="prev">Anterior</button>
+<span id="page"></span>
+<button id="next">Próxima</button>
+</div>
+<p>Selecionados: <strong id="count">0</strong></p>
+<p>Total: <strong id="total">R$ 0,00</strong></p>
 </div>
 
+<div class="card">
+<h2>Seus dados</h2>
+<input id="name" placeholder="Nome completo" autocomplete="name">
+<input id="phone" placeholder="WhatsApp com DDD" inputmode="tel">
+<input id="email" placeholder="Seu e-mail" type="email" autocomplete="email">
+<div class="cf-turnstile" data-sitekey="0x4AAAAAAGID1kwXr946xkqv"></div>
+<button id="pay">Reservar e gerar PIX</button>
+<div id="message"></div>
+</div>
+
+<div class="card" id="pix">
+<h2>Pagamento via PIX</h2>
+<p>Escaneie o QR Code pelo aplicativo do seu banco:</p>
+<img id="qr" alt="QR Code PIX">
+<p>Ou copie o código PIX:</p>
+<div id="pixcode"></div>
+<button id="copy">Copiar código PIX</button>
+<p id="ticketlink"></p>
+<p class="small">Confira o valor e o prazo antes de pagar.</p>
+</div>
+</main>
+
 <script>
-  const API_URL =
-    "https://mpcspsmmkfnfekzjbqmu.supabase.co/functions/v1/rifa-api";
+const API_URL = "https://mpcspsmmkfnfekzjbqmu.supabase.co/functions/v1/rifa-api";
+const PRICE = 50;
+const PAGE_SIZE = 200;
 
-  const TICKET_PRICE = 50;
-  const PAGE_SIZE = 200;
+let allNumbers = [];
+let selected = new Set();
+let currentPage = 0;
 
-  let allNumbers = [];
-  let chosen = new Set();
-  let currentPage = 0;
+const money = value => value.toLocaleString("pt-BR", {
+  style:"currency", currency:"BRL"
+});
 
-  const grid = document.getElementById("numberGrid");
-  const countElement = document.getElementById("selectedCount");
-  const totalElement = document.getElementById("totalPrice");
-  const messageElement = document.getElementById("message");
-  const buyButton = document.getElementById("buyButton");
+function updateTotal(){
+  document.getElementById("count").textContent = selected.size;
+  document.getElementById("total").textContent = money(selected.size * PRICE);
+}
 
-  function formatNumber(number) {
-    return String(number).padStart(4, "0");
+function renderNumbers(){
+  const search = document.getElementById("search").value.trim();
+  let list = allNumbers;
+
+  if(search){
+    list = allNumbers.filter(item =>
+      String(item.number).padStart(4,"0").includes(search)
+    );
+  }else{
+    list = allNumbers.slice(
+      currentPage * PAGE_SIZE,
+      (currentPage + 1) * PAGE_SIZE
+    );
   }
 
-  function formatMoney(value) {
-    return Number(value).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    });
-  }
+  const container = document.getElementById("numbers");
+  container.replaceChildren();
 
-  function showMessage(text, type) {
-    messageElement.textContent = text;
-    messageElement.className = "message " + type;
-    messageElement.style.display = "block";
-  }
+  list.forEach(item => {
+    const n = Number(item.number);
+    const button = document.createElement("button");
+    button.className = "num";
+    button.textContent = String(n).padStart(4,"0");
 
-  function hideMessage() {
-    messageElement.style.display = "none";
-  }
+    if(item.status !== "available"){
+      button.classList.add("unavailable");
+      button.disabled = true;
+    }else if(selected.has(n)){
+      button.classList.add("selected");
+    }
 
-  async function loadNumbers() {
-    grid.textContent = "Carregando números...";
-
-    try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
-
-      if (!response.ok || !data.success || !Array.isArray(data.numbers)) {
-        throw new Error(data.error || "Não foi possível carregar os números.");
-      }
-
-      allNumbers = data.numbers.sort((a, b) => a.number - b.number);
-
+    button.addEventListener("click", () => {
+      if(selected.has(n)) selected.delete(n);
+      else selected.add(n);
       renderNumbers();
-      updateSummary();
-
-    } catch (error) {
-      grid.textContent = "Erro ao carregar números. Atualize a página.";
-      showMessage(error.message, "error");
-    }
-  }
-
-  function renderNumbers() {
-    grid.innerHTML = "";
-
-    const start = currentPage * PAGE_SIZE;
-    const pageNumbers = allNumbers.slice(start, start + PAGE_SIZE);
-
-    pageNumbers.forEach(item => {
-      const number = Number(item.number);
-      const button = document.createElement("button");
-
-      button.className = "number";
-      button.textContent = formatNumber(number);
-
-      const unavailable = item.status !== "available";
-
-      if (unavailable) {
-        button.classList.add("unavailable");
-        button.disabled = true;
-        button.title = "Número indisponível";
-      } else if (chosen.has(number)) {
-        button.classList.add("selected");
-      }
-
-      button.addEventListener("click", () => toggleNumber(number));
-
-      grid.appendChild(button);
+      updateTotal();
     });
 
-    const totalPages = Math.ceil(allNumbers.length / PAGE_SIZE);
+    container.appendChild(button);
+  });
 
-    document.getElementById("pageInfo").textContent =
-      `Página ${currentPage + 1} de ${totalPages}`;
+  const pages = Math.ceil(allNumbers.length / PAGE_SIZE);
+  document.getElementById("page").textContent =
+    search ? "Busca" : `Página ${currentPage + 1} de ${pages}`;
 
-    document.getElementById("previousButton").disabled =
-      currentPage === 0;
+  document.getElementById("prev").disabled =
+    currentPage === 0 || !!search;
+  document.getElementById("next").disabled =
+    currentPage >= pages - 1 || !!search;
+}
 
-    document.getElementById("nextButton").disabled =
-      currentPage >= totalPages - 1;
+async function loadNumbers(){
+  const container = document.getElementById("numbers");
+  container.textContent = "Carregando números...";
+
+  try{
+    const response = await fetch(API_URL);
+    const data = await response.json();
+
+    if(!response.ok || !data.success){
+      throw new Error(data.error || "Erro ao carregar números.");
+    }
+
+    allNumbers = data.numbers || [];
+    renderNumbers();
+    updateTotal();
+  }catch(error){
+    container.textContent = error.message;
   }
+}
 
-  function changePage(direction) {
-    const totalPages = Math.ceil(allNumbers.length / PAGE_SIZE);
-
-    currentPage = Math.max(
-      0,
-      Math.min(totalPages - 1, currentPage + direction)
-    );
-
+document.getElementById("prev").addEventListener("click", () => {
+  if(currentPage > 0){
+    currentPage--;
     renderNumbers();
   }
+});
 
-  function toggleNumber(number) {
-    const item = allNumbers.find(n => Number(n.number) === number);
-
-    if (!item || item.status !== "available") {
-      return;
-    }
-
-    if (chosen.has(number)) {
-      chosen.delete(number);
-    } else {
-      if (chosen.size >= 2000) {
-        showMessage("Você atingiu o limite de 2.000 números.", "error");
-        return;
-      }
-
-      chosen.add(number);
-    }
-
-    hideMessage();
+document.getElementById("next").addEventListener("click", () => {
+  if((currentPage + 1) * PAGE_SIZE < allNumbers.length){
+    currentPage++;
     renderNumbers();
-    updateSummary();
+  }
+});
+
+document.getElementById("search").addEventListener("input", renderNumbers);
+
+document.getElementById("pay").addEventListener("click", async () => {
+  const button = document.getElementById("pay");
+  const message = document.getElementById("message");
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const email = document.getElementById("email").value.trim();
+
+  if(selected.size === 0){
+    message.textContent = "Selecione pelo menos um número.";
+    return;
   }
 
-  function updateSummary() {
-    countElement.textContent = chosen.size;
-    totalElement.textContent = formatMoney(chosen.size * TICKET_PRICE);
+  if(name.length < 3 || phone.length < 10 || !email.includes("@")){
+    message.textContent = "Confira seu nome, WhatsApp e e-mail.";
+    return;
   }
 
-  function searchNumber() {
-    const input = document.getElementById("searchNumber");
-    const value = input.value.trim();
-
-    if (value === "") {
-      showMessage("Digite um número para pesquisar.", "error");
-      return;
-    }
-
-    const number = Number(value);
-
-    if (!Number.isInteger(number) || number < 0 || number > 9999) {
-      showMessage("Digite um número entre 0000 e 9999.", "error");
-      return;
-    }
-
-    currentPage = Math.floor(number / PAGE_SIZE);
-    renderNumbers();
-
-    const buttons = grid.querySelectorAll(".number");
-    const target = [...buttons].find(
-      button => button.textContent === formatNumber(number)
-    );
-
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-      target.focus();
-    }
-
-    hideMessage();
+  if(typeof turnstile === "undefined" || !turnstile.getResponse()){
+    message.textContent = "Conclua a verificação de segurança.";
+    return;
   }
 
-  async function checkout() {
-    hideMessage();
+  button.disabled = true;
+  message.textContent = "Processando sua reserva...";
 
-    const name = document.getElementById("buyerName").value.trim();
-    const phone = document.getElementById("buyerPhone").value.trim();
+  try{
+    const response = await fetch(API_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        name,
+        phone,
+        email,
+        numbers:Array.from(selected),
+        turnstileToken:turnstile.getResponse()
+      })
+    });
 
-    const turnstileField = document.querySelector(
-      '[name="cf-turnstile-response"]'
-    );
+    const data = await response.json();
 
-    const turnstileToken = turnstileField
-      ? turnstileField.value
-      : "";
-
-    if (name.length < 3) {
-      showMessage("Informe seu nome completo.", "error");
-      return;
+    if(!response.ok || !data.success){
+      throw new Error(data.error || "Não foi possível criar a reserva.");
     }
 
-    if (phone.replace(/\D/g, "").length < 10) {
-      showMessage("Informe um WhatsApp válido com DDD.", "error");
-      return;
+    if(!data.pix || !data.pix.qr_code){
+      throw new Error("Reserva criada, mas o PIX não foi retornado. Entre em contato com o responsável.");
     }
 
-    if (chosen.size === 0) {
-      showMessage("Escolha pelo menos um número.", "error");
-      return;
+    document.getElementById("pix").style.display = "block";
+    document.getElementById("pixcode").textContent = data.pix.qr_code;
+
+    const qr = document.getElementById("qr");
+    if(data.pix.qr_code_base64){
+      qr.src = "data:image/png;base64," + data.pix.qr_code_base64;
+      qr.style.display = "inline-block";
+    }else{
+      qr.style.display = "none";
     }
 
-    if (!turnstileToken) {
-      showMessage("Faça a verificação de segurança do Cloudflare.", "error");
-      return;
+    const link = document.getElementById("ticketlink");
+    link.replaceChildren();
+    if(data.pix.ticket_url){
+      const a = document.createElement("a");
+      a.href = data.pix.ticket_url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "Abrir página de pagamento";
+      a.style.color = "#ffc400";
+      link.appendChild(a);
     }
 
-    buyButton.disabled = true;
-    buyButton.textContent = "PROCESSANDO...";
+    message.textContent = "PIX gerado. Confira os dados e conclua o pagamento.";
+    selected.clear();
+    updateTotal();
+    await loadNumbers();
 
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name: name,
-          phone: phone,
-          numbers: [...chosen],
-          turnstileToken: turnstileToken
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(
-          data.error || "Não foi possível realizar a reserva."
-        );
-      }
-
-      const selectedText = data.numbers
-        .map(formatNumber)
-        .join(", ");
-
-      chosen.clear();
-      updateSummary();
-
-      showMessage(
-        "Reserva criada com sucesso! " +
-        "Números: " + selectedText +
-        ". Valor: " + formatMoney(data.total_amount) +
-        ". Reserva válida até: " +
-        new Date(data.expires_at).toLocaleString("pt-BR") +
-        ". O pagamento ainda não está ativado.",
-        "success"
-      );
-
-      await loadNumbers();
-
-    } catch (error) {
-      showMessage(error.message, "error");
-      await loadNumbers();
-
-    } finally {
-      buyButton.disabled = false;
-      buyButton.textContent = "CONTINUAR";
-
-      if (window.turnstile) {
-        window.turnstile.reset();
-      }
-    }
+    document.getElementById("pix").scrollIntoView({behavior:"smooth"});
+  }catch(error){
+    message.textContent = error.message;
+  }finally{
+    button.disabled = false;
+    if(typeof turnstile !== "undefined") turnstile.reset();
   }
+});
 
-  loadNumbers();
+document.getElementById("copy").addEventListener("click", async () => {
+  const code = document.getElementById("pixcode").textContent;
+  try{
+    await navigator.clipboard.writeText(code);
+    document.getElementById("copy").textContent = "Código copiado!";
+  }catch(error){
+    document.getElementById("message").textContent =
+      "Não foi possível copiar automaticamente. Selecione e copie o código PIX.";
+  }
+});
+
+loadNumbers();
 </script>
 </body>
 </html>
